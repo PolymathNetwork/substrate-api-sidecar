@@ -16,7 +16,9 @@
 
 export { default as AccountsAssets } from './AccountsAssetsController';
 export { default as AccountsBalanceInfo } from './AccountsBalanceInfoController';
+export { default as AccountsCddInfo } from './AccountsCddInfoController';
 export { default as AccountsConvert } from './AccountsConvertController';
+export { default as AccountsPendingAuthorizations } from './AccountsPendingAuthorizationsController';
 export { default as AccountsPoolAssets } from './AccountsPoolAssetsController';
 export { default as AccountsProxyInfo } from './AccountsProxyInfoController';
 export { default as AccountsStakingInfo } from './AccountsStakingInfoController';

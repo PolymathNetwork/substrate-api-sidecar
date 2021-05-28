@@ -45,6 +45,7 @@ async function main() {
 
 	const { TYPES_BUNDLE, TYPES_SPEC, TYPES_CHAIN, TYPES, CACHE_CAPACITY } = config.SUBSTRATE;
 	// Instantiate a web socket connection to the node and load types
+
 	const api = await ApiPromise.create({
 		provider: config.SUBSTRATE.URL.startsWith('http')
 			? new HttpProvider(config.SUBSTRATE.URL, undefined, CACHE_CAPACITY || 0)

@@ -17,7 +17,9 @@
 import {
 	AccountsAssets,
 	AccountsBalanceInfo,
+	AccountsCddInfo,
 	AccountsConvert,
+	AccountsPendingAuthorizations,
 	AccountsPoolAssets,
 	AccountsProxyInfo,
 	AccountsStakingInfo,
@@ -60,6 +62,8 @@ export const controllers = {
 	AccountsConvert,
 	AccountsPoolAssets,
 	AccountsProxyInfo,
+	AccountsCddInfo,
+	AccountsPendingAuthorizations,
 	AccountsStakingInfo,
 	AccountsValidate,
 	AccountsVestingInfo,
