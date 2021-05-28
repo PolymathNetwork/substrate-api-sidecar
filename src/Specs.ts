@@ -58,7 +58,7 @@ export class Specs {
 				CONFIG.BIND_HOST,
 				'Network interface we bind to. You *MUST* use 0.0.0.0 if you are using Docker.',
 				{
-					default: '127.0.0.1',
+					default: process.env.HOST || '127.0.0.1',
 					type: 'string',
 				}
 			)
