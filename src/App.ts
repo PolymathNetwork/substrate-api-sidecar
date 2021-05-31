@@ -6,6 +6,7 @@ import {
 	RequestHandler,
 	Response,
 } from 'express';
+import path from 'path';
 
 import packageJson from '../package.json';
 import AbstractController from './controllers/AbstractController';
@@ -42,6 +43,7 @@ export default class App {
 		this.initMiddleware(preMiddleware);
 		this.initControllers(controllers);
 		this.initRoot();
+		this.initSwagger();
 		this.initErrorMiddleware(postMiddleware);
 	}
 
@@ -102,6 +104,16 @@ export default class App {
 				listen: `${this.host}:${this.port}`,
 				routes: this.getRoutes(),
 			})
+		);
+	}
+
+	/**
+	 * Mount the swagger-ui
+	 */
+	private initSwagger() {
+		this.app.use(
+			'/docs',
+			express.static(path.join(__dirname, '../../docs/dist'))
 		);
 	}
 
