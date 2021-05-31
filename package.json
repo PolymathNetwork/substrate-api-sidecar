@@ -30,6 +30,7 @@
     "build:calc": "bash ./calc/build.sh",
     "build:docker": "docker build -t substrate-api-sidecar .",
     "build:docs": "(cd docs && yarn && yarn build)",
+    "heroku-postbuild": "build && build:docs",
     "main": "node ./build/src/main.js",
     "lint": "substrate-dev-run-lint",
     "deploy": "yarn build && npm publish",
