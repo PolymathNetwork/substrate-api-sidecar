@@ -30,7 +30,7 @@ import { westendControllers } from './westendControllers';
 const specToControllerMap = {
 	westend: westendControllers,
 	polkadot: polkadotControllers,
-	polymesh: polymeshControllers,
+	polymesh_testnet: polymeshControllers,
 	kusama: kusamaControllers,
 	kulupu: kulupuControllers,
 	kilt: kiltControllers,

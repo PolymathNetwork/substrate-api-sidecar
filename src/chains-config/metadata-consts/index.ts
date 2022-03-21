@@ -79,11 +79,11 @@ export function generateBlockWeightStore(
  *
  * @param specName specName from the metadata of the current block being fetched
  */
-export function getBlockWeight(specName: string): BlockWeightStore {
+export function getBlockWeight(specName: string): BlockWeightStore {	
 	switch (specName) {
 		case 'polkadot':
 			return generateBlockWeightStore(polkadotDefinitions);
-		case 'polymesh':
+		case 'polymesh_testnet':
 			return generateBlockWeightStore(polymeshDefinitions);
 		case 'kusama':
 			return generateBlockWeightStore(kusamaDefinitions);

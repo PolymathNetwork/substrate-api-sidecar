@@ -543,7 +543,7 @@ export class BlocksService extends AbstractService {
 			coefficients,
 			multiplier.toString(10),
 			perByte.toString(10),
-			specName,
+			'bifrost',
 			specVersion
 		);
 
