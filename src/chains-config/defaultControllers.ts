@@ -1,4 +1,5 @@
 import { ControllerConfig } from '../types/chains-config';
+import { initLRUCache } from './cache/lruCache';
 
 /**
  * Controllers that Sidecar will always default to. This will always be
@@ -6,31 +7,33 @@ import { ControllerConfig } from '../types/chains-config';
  */
 export const defaultControllers: ControllerConfig = {
 	controllers: [
-		'Blocks',
-		'BlocksExtrinsics',
 		'AccountsAssets',
-		'AccountsStakingPayouts',
 		'AccountsBalanceInfo',
 		'AccountsStakingInfo',
+		'AccountsStakingPayouts',
+		'AccountsValidate',
 		'AccountsVestingInfo',
+		'Blocks',
+		'BlocksExtrinsics',
 		'NodeNetwork',
-		'NodeVersion',
 		'NodeTransactionPool',
-		'RuntimeCode',
-		'RuntimeSpec',
-		'RuntimeMetadata',
-		'TransactionDryRun',
-		'TransactionMaterial',
-		'TransactionFeeEstimate',
-		'TransactionSubmit',
+		'NodeVersion',
 		'PalletsAssets',
 		'PalletsStakingProgress',
 		'PalletsStorage',
 		'Paras',
+		'RuntimeCode',
+		'RuntimeMetadata',
+		'RuntimeSpec',
+		'TransactionDryRun',
+		'TransactionFeeEstimate',
+		'TransactionMaterial',
+		'TransactionSubmit',
 	],
 	options: {
 		finalizes: true,
 		minCalcFeeRuntime: null,
 		blockWeightStore: {},
+		blockStore: initLRUCache(),
 	},
 };

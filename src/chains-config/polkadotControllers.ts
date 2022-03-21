@@ -1,4 +1,5 @@
 import { ControllerConfig } from '../types/chains-config';
+import { initLRUCache } from './cache/lruCache';
 import { getBlockWeight } from './metadata-consts';
 
 /**
@@ -6,31 +7,32 @@ import { getBlockWeight } from './metadata-consts';
  */
 export const polkadotControllers: ControllerConfig = {
 	controllers: [
-		'Blocks',
-		'BlocksExtrinsics',
-		'AccountsAssets',
-		'AccountsStakingPayouts',
 		'AccountsBalanceInfo',
 		'AccountsStakingInfo',
+		'AccountsStakingPayouts',
+		'AccountsValidate',
 		'AccountsVestingInfo',
+		'Blocks',
+		'BlocksExtrinsics',
+		'BlocksTrace',
 		'NodeNetwork',
-		'NodeVersion',
 		'NodeTransactionPool',
-		'RuntimeCode',
-		'RuntimeSpec',
-		'RuntimeMetadata',
-		'TransactionDryRun',
-		'TransactionMaterial',
-		'TransactionFeeEstimate',
-		'TransactionSubmit',
-		'PalletsAssets',
+		'NodeVersion',
 		'PalletsStakingProgress',
 		'PalletsStorage',
 		'Paras',
+		'RuntimeCode',
+		'RuntimeMetadata',
+		'RuntimeSpec',
+		'TransactionDryRun',
+		'TransactionFeeEstimate',
+		'TransactionMaterial',
+		'TransactionSubmit',
 	],
 	options: {
 		finalizes: true,
 		minCalcFeeRuntime: 0,
 		blockWeightStore: getBlockWeight('polkadot'),
+		blockStore: initLRUCache(),
 	},
 };

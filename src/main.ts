@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-// Copyright 2017-2020 Parity Technologies (UK) Ltd.
+// Copyright 2017-2022 Parity Technologies (UK) Ltd.
 // This file is part of Substrate API Sidecar.
 //
 // Substrate API Sidecar is free software: you can redistribute it and/or modify
@@ -16,8 +16,12 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+// Introduced via `@polkadot/api v7.0.1`.
+import '@polkadot/api-augment';
+
 import { ApiPromise } from '@polkadot/api';
 import * as apps from '@polkadot/apps-config/api';
+import { createWsEndpoints } from '@polkadot/apps-config/endpoints';
 import { WsProvider } from '@polkadot/rpc-provider';
 import { OverrideBundleType, RegistryTypes } from '@polkadot/types/types';
 import { json } from 'express';
@@ -28,12 +32,12 @@ import { getControllersForSpec } from './chains-config';
 import { consoleOverride } from './logging/consoleOverride';
 import { Log } from './logging/Log';
 import * as middleware from './middleware';
+import { parseArgs } from './parseArgs';
 import { SidecarConfig } from './SidecarConfig';
 
-const { logger } = Log;
-const { config } = SidecarConfig;
-
 async function main() {
+	const { config } = SidecarConfig;
+	const { logger } = Log;
 	// Overide console.{log, error, warn, etc}
 	consoleOverride(logger);
 
@@ -88,12 +92,6 @@ async function main() {
 	app.listen();
 }
 
-process.on('SIGINT', function () {
-	console.log('Caught interrupt signal, exiting...');
-	process.exit(0);
-});
-main().catch(console.log);
-
 /**
  * Prompt the user with some basic info about the node and the network they have
  * connected Sidecar to.
@@ -103,26 +101,19 @@ main().catch(console.log);
  * @param implName implementation name of the node Sidecar is connected to
  */
 function startUpPrompt(wsUrl: string, chainName: string, implName: string) {
+	const { logger } = Log;
+	const { config } = SidecarConfig;
+
 	/**
-	 * Best effort list of known public nodes that do not encourage high traffic
-	 * sidecar installations connecting to them for non - testing / development purposes.
+	 * Retrieving public endpoints from @polkadot/apps-config/endpoints
 	 */
-	const publicWsUrls: string[] = [
-		'wss://rpc.polkadot.io',
-		'wss://cc1-1.polkadot.network',
-		'wss://kusama-rpc.polkadot.io',
-		'wss://cc3-5.kusama.network',
-		'wss://fullnode.centrifuge.io',
-		'wss://crab.darwinia.network',
-		'wss://mainnet-node.dock.io',
-		'wss://mainnet1.edgewa.re',
-		'wss://rpc.kulupu.corepaper.org/ws',
-		'wss://main1.nodleprotocol.io',
-		'wss://rpc.plasmnet.io/',
-		'wss://mainnet-rpc.stafi.io',
-		'wss://rpc.subsocial.network',
-		'wss://full-nodes-lb.kilt.io:443',
-	];
+	const publicWsUrls: string[] = [];
+	const endpoints = createWsEndpoints(<T = string>(): T => '' as unknown as T);
+	for (const endpoint of endpoints) {
+		if (endpoint.value && endpoint.info != 'local') {
+			publicWsUrls.push(endpoint.value);
+		}
+	}
 
 	logger.info(
 		`Connected to chain ${chainName} on the ${implName} client at ${config.SUBSTRATE.WS_URL}`
@@ -149,4 +140,18 @@ function startUpPrompt(wsUrl: string, chainName: string, implName: string) {
 			`Using unencrypted connection to a public node (${wsUrl}); All traffic is sent over the internet in cleartext.`
 		);
 	}
+}
+
+process.on('SIGINT', function () {
+	console.log('Caught interrupt signal, exiting...');
+	process.exit(0);
+});
+
+const args = parseArgs();
+
+if (args.version) {
+	console.log(`@substrate/api-sidecar v${packageJSON.version}`);
+	process.exit(0);
+} else {
+	main().catch(console.log);
 }

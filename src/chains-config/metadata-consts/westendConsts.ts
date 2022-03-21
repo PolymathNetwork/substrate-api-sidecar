@@ -9,7 +9,10 @@ export const westendDefinitions: MetadataConsts[] = [
 		extrinsicBaseWeight,
 	},
 	{
-		runtimeVersions: [47, 48, 49],
+		runtimeVersions: [
+			47, 48, 49, 50, 9000, 9010, 9030, 9033, 9050, 9070, 9080, 9090, 9100,
+			9110, 9111, 9120, 9121, 9122, 9130, 9140, 9150, 9160, 9170,
+		],
 		perClass,
 	},
 ];

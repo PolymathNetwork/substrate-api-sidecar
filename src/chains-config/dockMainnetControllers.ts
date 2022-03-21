@@ -1,4 +1,5 @@
 import { ControllerConfig } from '../types/chains-config';
+import { initLRUCache } from './cache/lruCache';
 import { getBlockWeight } from './metadata-consts';
 
 /**
@@ -6,24 +7,26 @@ import { getBlockWeight } from './metadata-consts';
  */
 export const dockMainnetControllers: ControllerConfig = {
 	controllers: [
+		'AccountsBalanceInfo',
+		'AccountsValidate',
 		'Blocks',
 		'BlocksExtrinsics',
-		'AccountsBalanceInfo',
 		'NodeNetwork',
-		'NodeVersion',
 		'NodeTransactionPool',
-		'RuntimeCode',
-		'RuntimeSpec',
-		'RuntimeMetadata',
-		'TransactionDryRun',
-		'TransactionMaterial',
-		'TransactionFeeEstimate',
-		'TransactionSubmit',
+		'NodeVersion',
 		'PalletsStorage',
+		'RuntimeCode',
+		'RuntimeMetadata',
+		'RuntimeSpec',
+		'TransactionDryRun',
+		'TransactionFeeEstimate',
+		'TransactionMaterial',
+		'TransactionSubmit',
 	],
 	options: {
 		finalizes: true,
 		minCalcFeeRuntime: 1,
 		blockWeightStore: getBlockWeight('dock-main-runtime'),
+		blockStore: initLRUCache(),
 	},
 };

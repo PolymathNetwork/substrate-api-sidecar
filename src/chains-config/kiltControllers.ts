@@ -1,17 +1,20 @@
 import { ControllerConfig } from '../types/chains-config';
+import { initLRUCache } from './cache/lruCache';
 
 /**
  * Controllers for KILT's mashnet.
  */
 export const kiltControllers: ControllerConfig = {
 	controllers: [
-		'Blocks',
-		'BlocksExtrinsics',
 		'AccountsBalanceInfo',
 		'AccountsStakingInfo',
+		'AccountsValidate',
+		'Blocks',
+		'BlocksExtrinsics',
 		'NodeNetwork',
-		'NodeVersion',
 		'NodeTransactionPool',
+		'NodeVersion',
+		'PalletsStorage',
 		'RuntimeCode',
 		'RuntimeSpec',
 		'RuntimeMetadata',
@@ -19,11 +22,11 @@ export const kiltControllers: ControllerConfig = {
 		'TransactionMaterial',
 		'TransactionFeeEstimate',
 		'TransactionSubmit',
-		'PalletsStorage',
 	],
 	options: {
 		finalizes: true,
 		minCalcFeeRuntime: null,
 		blockWeightStore: {},
+		blockStore: initLRUCache(),
 	},
 };

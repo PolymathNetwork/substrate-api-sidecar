@@ -1,22 +1,21 @@
 import { ApiPromise, WsProvider } from '@polkadot/api';
-import { StorageEntryBase } from '@polkadot/api/types/storage';
-import { Metadata } from '@polkadot/metadata';
+import { StorageEntryBase } from '@polkadot/api/types';
+import { Metadata } from '@polkadot/types';
 import { Option, StorageKey, Tuple, TypeRegistry, Vec } from '@polkadot/types';
 import {
 	Codec,
-	CodecArg,
 	Constructor,
 	InterfaceTypes,
 	Registry,
 } from '@polkadot/types/types';
-import { Observable } from '@polkadot/x-rxjs';
+import { Observable } from 'rxjs';
 
 /**
  * Type to fulfill StorageEntryBase regarding storage keys
  */
 type GenericStorageEntryFunction = (
-	arg1?: CodecArg,
-	arg2?: CodecArg
+	arg1?: unknown,
+	arg2?: unknown
 ) => Observable<Codec>;
 
 /**
@@ -26,7 +25,7 @@ type GenericStorageEntryFunction = (
  * @param metadata Metadata to be associated with the api augmentation
  */
 export function createApiWithAugmentations(
-	metadata?: string | Uint8Array
+	metadata?: `0x${string}` | Uint8Array
 ): ApiPromise {
 	const registry = new TypeRegistry();
 	const expandedMetadata = new Metadata(registry, metadata);

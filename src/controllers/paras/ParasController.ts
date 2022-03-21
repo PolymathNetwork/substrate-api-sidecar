@@ -7,18 +7,24 @@ import AbstractController from '../AbstractController';
 
 export default class ParasController extends AbstractController<ParasService> {
 	constructor(api: ApiPromise) {
-		super(api, '/experimental/paras', new ParasService(api));
+		super(api, '', new ParasService(api));
 		this.initRoutes();
 	}
 
 	protected initRoutes(): void {
 		this.safeMountAsyncGetHandlers([
-			['/', this.getParas],
-			['/crowdloans', this.getCrowdloans],
-			['/:paraId/crowdloan-info', this.getCrowdloanInfo],
-			['/:paraId/lease-info', this.getLeaseInfo],
-			['/leases/current', this.getLeasesCurrent],
-			['/auctions/current', this.getAuctionsCurrent],
+			['/paras', this.getParas],
+			['/paras/crowdloans', this.getCrowdloans],
+			['/paras/:paraId/crowdloan-info', this.getCrowdloanInfo],
+			['/paras/:paraId/lease-info', this.getLeaseInfo],
+			['/paras/leases/current', this.getLeasesCurrent],
+			['/paras/auctions/current', this.getAuctionsCurrent],
+			['/experimental/paras/', this.getParas],
+			['/experimental/paras/crowdloans', this.getCrowdloans],
+			['/experimental/paras/:paraId/crowdloan-info', this.getCrowdloanInfo],
+			['/experimental/paras/:paraId/lease-info', this.getLeaseInfo],
+			['/experimental/paras/leases/current', this.getLeasesCurrent],
+			['/experimental/paras/auctions/current', this.getAuctionsCurrent],
 		]);
 	}
 
@@ -26,6 +32,8 @@ export default class ParasController extends AbstractController<ParasService> {
 		{ query: { at } },
 		res
 	): Promise<void> => {
+		this.checkParasModule();
+
 		const hash = await this.getHashFromAt(at);
 
 		ParasController.sanitizedSend(res, await this.service.paras(hash));
@@ -35,6 +43,8 @@ export default class ParasController extends AbstractController<ParasService> {
 		{ params: { paraId }, query: { at } },
 		res
 	): Promise<void> => {
+		this.checkParasModule();
+
 		const hash = await this.getHashFromAt(at);
 		const paraIdArg = this.parseNumberOrThrow(
 			paraId,
@@ -51,6 +61,8 @@ export default class ParasController extends AbstractController<ParasService> {
 		{ query: { at } },
 		res
 	): Promise<void> => {
+		this.checkParasModule();
+
 		const hash = await this.getHashFromAt(at);
 
 		ParasController.sanitizedSend(res, await this.service.crowdloans(hash));
@@ -60,6 +72,8 @@ export default class ParasController extends AbstractController<ParasService> {
 		{ params: { paraId }, query: { at } },
 		res
 	): Promise<void> => {
+		this.checkParasModule();
+
 		const hash = await this.getHashFromAt(at);
 		const paraIdArg = this.parseNumberOrThrow(
 			paraId,
@@ -76,6 +90,8 @@ export default class ParasController extends AbstractController<ParasService> {
 		{ query: { at, currentLeaseHolders } },
 		res
 	): Promise<void> => {
+		this.checkParasModule();
+
 		const hash = await this.getHashFromAt(at);
 		const includeCurrentLeaseHolders = currentLeaseHolders !== 'false';
 
@@ -89,11 +105,19 @@ export default class ParasController extends AbstractController<ParasService> {
 		{ query: { at } },
 		res
 	): Promise<void> => {
+		this.checkParasModule();
+
 		const hash = await this.getHashFromAt(at);
 
 		ParasController.sanitizedSend(
 			res,
 			await this.service.auctionsCurrent(hash)
 		);
+	};
+
+	private checkParasModule = (): void => {
+		if (!this.api.query.paras) {
+			throw new Error('Parachains are not yet supported on this network.');
+		}
 	};
 }

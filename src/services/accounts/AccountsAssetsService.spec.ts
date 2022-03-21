@@ -1,6 +1,32 @@
+import { ApiPromise } from '@polkadot/api';
+import { ApiDecoration } from '@polkadot/api/types';
+import { Hash } from '@polkadot/types/interfaces';
+
 import { sanitizeNumbers } from '../../sanitize/sanitizeNumbers';
-import { blockHash789629, mockApi } from '../test-helpers/mock';
+import { blockHash789629, defaultMockApi } from '../test-helpers/mock';
+import {
+	assetApprovals,
+	assetsAccount,
+	assetsInfoKeysInjected,
+	assetsMetadata,
+} from '../test-helpers/mock/assets/mockAssetData';
 import { AccountsAssetsService } from './AccountsAssetsService';
+
+const historicApi = {
+	query: {
+		assets: {
+			account: assetsAccount,
+			approvals: assetApprovals,
+			asset: assetsInfoKeysInjected(),
+			metadata: assetsMetadata,
+		},
+	},
+} as unknown as ApiDecoration<'promise'>;
+
+const mockApi = {
+	...defaultMockApi,
+	at: (_hash: Hash) => historicApi,
+} as unknown as ApiPromise;
 
 const accountsAssetsService = new AccountsAssetsService(mockApi);
 

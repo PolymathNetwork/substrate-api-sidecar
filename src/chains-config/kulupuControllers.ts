@@ -1,25 +1,28 @@
 import { ControllerConfig } from '../types/chains-config';
+import { initLRUCache } from './cache/lruCache';
 
 export const kulupuControllers: ControllerConfig = {
 	controllers: [
+		'AccountsBalanceInfo',
+		'AccountsValidate',
 		'Blocks',
 		'BlocksExtrinsics',
-		'AccountsBalanceInfo',
 		'NodeNetwork',
-		'NodeVersion',
 		'NodeTransactionPool',
-		'RuntimeCode',
-		'RuntimeSpec',
-		'RuntimeMetadata',
-		'TransactionDryRun',
-		'TransactionMaterial',
-		'TransactionFeeEstimate',
-		'TransactionSubmit',
+		'NodeVersion',
 		'PalletsAssets',
+		'RuntimeCode',
+		'RuntimeMetadata',
+		'RuntimeSpec',
+		'TransactionDryRun',
+		'TransactionFeeEstimate',
+		'TransactionMaterial',
+		'TransactionSubmit',
 	],
 	options: {
 		finalizes: false,
 		minCalcFeeRuntime: null,
 		blockWeightStore: {},
+		blockStore: initLRUCache(),
 	},
 };

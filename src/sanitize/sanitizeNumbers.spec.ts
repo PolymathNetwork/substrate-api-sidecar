@@ -25,11 +25,13 @@ import {
 	Vec,
 	VecFixed,
 } from '@polkadot/types';
-import { CodecDate } from '@polkadot/types/codec/Date';
-import { UInt } from '@polkadot/types/codec/UInt';
+import { CodecDate, UInt } from '@polkadot/types-codec';
 import BN from 'bn.js';
 
 import {
+	MAX_H160,
+	MAX_H256,
+	MAX_H512,
 	MAX_I8,
 	MAX_I16,
 	MAX_I32,
@@ -46,7 +48,7 @@ import {
 	MIN_I64,
 	MIN_I128,
 } from '../test-helpers/constants';
-import { kusamaRegistry } from '../test-helpers/registries';
+import { kusamaRegistry, polkadotRegistry } from '../test-helpers/registries';
 import {
 	PRE_SANITIZED_BALANCE_LOCK,
 	PRE_SANITIZED_OPTION_VESTING_INFO,
@@ -253,23 +255,23 @@ describe('sanitizeNumbers', () => {
 		});
 
 		it('handles H512', () => {
-			const h = kusamaRegistry.createType('H512', MAX_U64);
+			const h = kusamaRegistry.createType('H512', MAX_H512);
 			expect(sanitizeNumbers(h)).toBe(
-				'0x31383434363734343037333730393535313631350000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
+				'0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'
 			);
 		});
 
 		it('handles H256', () => {
-			const h = kusamaRegistry.createType('H256', MAX_U32);
+			const h = kusamaRegistry.createType('H256', MAX_H256);
 			expect(sanitizeNumbers(h)).toBe(
-				'0x3432393439363732393500000000000000000000000000000000000000000000'
+				'0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'
 			);
 		});
 
 		it('handles H160', () => {
-			const h = kusamaRegistry.createType('H160', MAX_U16);
+			const h = kusamaRegistry.createType('H160', MAX_H160);
 			expect(sanitizeNumbers(h)).toBe(
-				'0x3635353335000000000000000000000000000000'
+				'0xffffffffffffffffffffffffffffffffffffffff'
 			);
 		});
 
@@ -806,7 +808,10 @@ describe('sanitizeNumbers', () => {
 		});
 
 		it('converts U8a fixed', () => {
-			const u8a = new (U8aFixed.with(32))(kusamaRegistry, [0x02, 0x03]);
+			const u8a = new (U8aFixed.with(32))(
+				kusamaRegistry,
+				[0x02, 0x03, 0x00, 0x00]
+			);
 			expect(sanitizeNumbers(u8a)).toStrictEqual('0x02030000');
 		});
 
@@ -857,25 +862,26 @@ describe('sanitizeNumbers', () => {
 		it('handles Call', () => {
 			const c = new GenericCall(kusamaRegistry, {
 				args: ['5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw', 100000],
-				callIndex: [6, 0], // balances.transfer
+				callIndex: [4, 0], // balances.transfer
 			});
 			expect(sanitizeNumbers(c)).toStrictEqual({
 				args: {
 					dest: '5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw',
 					value: '100000',
 				},
-				callIndex: '0x0600',
+				callIndex: '0x0400',
 			});
 		});
 
 		it('handles Event', () => {
 			const event = kusamaRegistry.createType(
 				'Event',
-				new Uint8Array([6, 1, 1, 1])
+				new Uint8Array([6, 0, 0])
 			);
+
 			expect(sanitizeNumbers(event)).toStrictEqual({
-				data: ['257', '0', []],
-				index: '0x0601',
+				data: [[]],
+				index: '0x0600',
 			});
 		});
 
@@ -908,12 +914,12 @@ describe('sanitizeNumbers', () => {
 		});
 
 		it('handles Extrinsic', () => {
-			const extrinsic = kusamaRegistry.createType(
+			const extrinsic = polkadotRegistry.createType(
 				'Extrinsic',
 				'0x250284d43593c715fdd31c61141abd04a99fd6822c8558854ccde39a5684e7a56da27d0182630bcec823e017e7ae576feda0dae3bf76f74049f3b8f72884dcb41169154bc7d179d47b50453f4f8865a5f3030c1e78ed8eff624765d0ff5eb0136a46538e1502000005008eaf04151687736326c9fea17e25fc5287613693c912909cb226aa4794f26a4830'
 			);
 			expect(sanitizeNumbers(extrinsic)).toBe(
-				'0xb10184d43593c715fdd31c61141abd04a99fd6822c8558854ccde39a5684e7a56da27d0182630bcec823e017e7ae576feda0dae3bf76f74049f3b8f72884dcb41169154bc7d179d47b50453f4f8865a5f3030c1e78ed8eff624765d0ff5eb0136a46538e1502000005008eaf0415'
+				'0x250284d43593c715fdd31c61141abd04a99fd6822c8558854ccde39a5684e7a56da27d0182630bcec823e017e7ae576feda0dae3bf76f74049f3b8f72884dcb41169154bc7d179d47b50453f4f8865a5f3030c1e78ed8eff624765d0ff5eb0136a46538e1502000005008eaf04151687736326c9fea17e25fc5287613693c912909cb226aa4794f26a4830'
 			);
 		});
 
@@ -974,9 +980,9 @@ describe('sanitizeNumbers', () => {
 		});
 
 		it('converts Signature', () => {
-			const s = kusamaRegistry.createType('Signature', MAX_U64);
+			const s = kusamaRegistry.createType('Signature', MAX_H512);
 			expect(sanitizeNumbers(s)).toBe(
-				'0x31383434363734343037333730393535313631350000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
+				'0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'
 			);
 		});
 
@@ -1102,7 +1108,7 @@ describe('sanitizeNumbers', () => {
 		it('converts Vec<BalanceLock>', () => {
 			expect(sanitizeNumbers(PRE_SANITIZED_BALANCE_LOCK)).toStrictEqual([
 				{
-					id: '0x4c6f636b49640000',
+					id: '0x3030303030303030',
 					amount: '71857424040631296',
 					reasons: 'Misc',
 				},

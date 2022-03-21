@@ -1,4 +1,5 @@
 import { ControllerConfig } from '../types/chains-config';
+import { initLRUCache } from './cache/lruCache';
 import { getBlockWeight } from './metadata-consts';
 
 /**
@@ -6,32 +7,32 @@ import { getBlockWeight } from './metadata-consts';
  */
 export const kusamaControllers: ControllerConfig = {
 	controllers: [
+		'AccountsBalanceInfo',
+		'AccountsStakingInfo',
+		'AccountsStakingPayouts',
+		'AccountsValidate',
+		'AccountsVestingInfo',
 		'Blocks',
 		'BlocksExtrinsics',
 		'BlocksTrace',
-		'AccountsAssets',
-		'AccountsStakingPayouts',
-		'AccountsBalanceInfo',
-		'AccountsStakingInfo',
-		'AccountsVestingInfo',
 		'NodeNetwork',
-		'NodeVersion',
 		'NodeTransactionPool',
-		'RuntimeCode',
-		'RuntimeSpec',
-		'RuntimeMetadata',
-		'TransactionDryRun',
-		'TransactionMaterial',
-		'TransactionFeeEstimate',
-		'TransactionSubmit',
-		'PalletsAssets',
+		'NodeVersion',
 		'PalletsStakingProgress',
 		'PalletsStorage',
 		'Paras',
+		'RuntimeCode',
+		'RuntimeMetadata',
+		'RuntimeSpec',
+		'TransactionDryRun',
+		'TransactionFeeEstimate',
+		'TransactionMaterial',
+		'TransactionSubmit',
 	],
 	options: {
 		finalizes: true,
 		minCalcFeeRuntime: 1062,
 		blockWeightStore: getBlockWeight('kusama'),
+		blockStore: initLRUCache(),
 	},
 };

@@ -1,4 +1,5 @@
 import { ControllerConfig } from '../types/chains-config';
+import { initLRUCache } from './cache/lruCache';
 import { getBlockWeight } from './metadata-consts';
 
 /**
@@ -6,26 +7,28 @@ import { getBlockWeight } from './metadata-consts';
  */
 export const polymeshControllers: ControllerConfig = {
 	controllers: [
-		'Blocks',
-		'BlocksExtrinsics',
 		'AccountsStakingPayouts',
 		'AccountsStakingInfo',
+		'AccountsValidate',
+		'Blocks',
+		'BlocksExtrinsics',
 		'NodeNetwork',
-		'NodeVersion',
 		'NodeTransactionPool',
-		'RuntimeCode',
-		'RuntimeSpec',
-		'RuntimeMetadata',
-		'TransactionDryRun',
-		'TransactionMaterial',
-		'TransactionFeeEstimate',
-		'TransactionSubmit',
+		'NodeVersion',
 		'PalletsStakingProgress',
 		'PalletsStorage',
+		'RuntimeCode',
+		'RuntimeMetadata',
+		'RuntimeSpec',
+		'TransactionDryRun',
+		'TransactionFeeEstimate',
+		'TransactionMaterial',
+		'TransactionSubmit',
 	],
 	options: {
 		finalizes: true,
 		minCalcFeeRuntime: 0,
 		blockWeightStore: getBlockWeight('polymesh'),
+		blockStore: initLRUCache(),
 	},
 };

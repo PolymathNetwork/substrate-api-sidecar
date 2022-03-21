@@ -2,6 +2,7 @@ import { ApiPromise } from '@polkadot/api';
 import { stringCamelCase } from '@polkadot/util';
 import { RequestHandler } from 'express-serve-static-core';
 
+import { Log } from '../../logging/Log';
 import { PalletsStorageService } from '../../services';
 import AbstractController from '../AbstractController';
 
@@ -19,10 +20,13 @@ import AbstractController from '../AbstractController';
  * See `docs/src/openapi-v1.yaml` for usage information.
  */
 export default class PalletsStorageController extends AbstractController<PalletsStorageService> {
+	private readonly deprecationMsg: string;
 	constructor(api: ApiPromise) {
 		super(api, '/pallets/:palletId/storage', new PalletsStorageService(api));
 
 		this.initRoutes();
+		this.deprecationMsg =
+			'The adjustMetadataV13 query parameter is deprecated and will be removed in v12 of sidecar';
 	}
 
 	protected initRoutes(): void {
@@ -35,20 +39,24 @@ export default class PalletsStorageController extends AbstractController<Pallets
 
 	private getStorageItem: RequestHandler = async (
 		{
-			query: { at, key1, key2, metadata },
+			query: { at, key1, key2, metadata, adjustMetadataV13 },
 			params: { palletId, storageItemId },
 		},
 		res
 	): Promise<void> => {
 		const key1Arg = typeof key1 === 'string' ? key1 : undefined;
 		const key2Arg = typeof key2 === 'string' ? key2 : undefined;
-		const metadataArg = metadata === 'true' ? true : false;
+		const metadataArg = metadata === 'true';
+		const adjustMetadataV13Arg = adjustMetadataV13 === 'true';
+
+		adjustMetadataV13Arg && Log.logger.warn(this.deprecationMsg);
 
 		const hash = await this.getHashFromAt(at);
+		const historicApi = await this.api.at(hash);
 
 		PalletsStorageController.sanitizedSend(
 			res,
-			await this.service.fetchStorageItem({
+			await this.service.fetchStorageItem(historicApi, {
 				hash,
 				// stringCamelCase ensures we don't have snake case or kebab case
 				palletId: stringCamelCase(palletId),
@@ -56,24 +64,30 @@ export default class PalletsStorageController extends AbstractController<Pallets
 				key1: key1Arg,
 				key2: key2Arg,
 				metadata: metadataArg,
+				adjustMetadataV13Arg,
 			})
 		);
 	};
 
 	private getStorage: RequestHandler = async (
-		{ params: { palletId }, query: { at, onlyIds } },
+		{ params: { palletId }, query: { at, onlyIds, adjustMetadataV13 } },
 		res
 	): Promise<void> => {
-		const onlyIdsArg = onlyIds === 'true' ? true : false;
+		const onlyIdsArg = onlyIds === 'true';
+		const adjustMetadataV13Arg = adjustMetadataV13 === 'true';
+
+		adjustMetadataV13Arg && Log.logger.warn(this.deprecationMsg);
 
 		const hash = await this.getHashFromAt(at);
+		const historicApi = await this.api.at(hash);
 
 		PalletsStorageController.sanitizedSend(
 			res,
-			await this.service.fetchStorage({
+			await this.service.fetchStorage(historicApi, {
 				hash,
 				palletId: stringCamelCase(palletId),
 				onlyIds: onlyIdsArg,
+				adjustMetadataV13Arg,
 			})
 		);
 	};

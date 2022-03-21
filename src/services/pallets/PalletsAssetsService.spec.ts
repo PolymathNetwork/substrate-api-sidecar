@@ -1,6 +1,26 @@
+import { ApiPromise } from '@polkadot/api';
+
 import { sanitizeNumbers } from '../../sanitize/sanitizeNumbers';
-import { blockHash789629, mockApi } from '../test-helpers/mock';
+import { blockHash789629, defaultMockApi } from '../test-helpers/mock';
+import {
+	assetApprovals,
+	assetsAccount,
+	assetsInfo,
+	assetsMetadata,
+} from '../test-helpers/mock/assets/mockAssetData';
 import { PalletsAssetsService } from './PalletsAssetsService';
+
+const mockApi = {
+	...defaultMockApi,
+	query: {
+		assets: {
+			asset: assetsInfo,
+			approvals: assetApprovals,
+			account: assetsAccount,
+			metadata: assetsMetadata,
+		},
+	},
+} as unknown as ApiPromise;
 
 const palletsAssetsService = new PalletsAssetsService(mockApi);
 

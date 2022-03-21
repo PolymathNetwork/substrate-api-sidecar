@@ -1,4 +1,5 @@
 **/build/*
 calc
 docs
-runtime-tests
+e2e-tests
+scripts
