@@ -1,6 +1,7 @@
 export * from './AccountAssets';
 export * from './AccountBalanceInfo';
 export * from './AccountCddInfo';
+export * from './AccountPendingAuthorizations';
 export * from './AccountStakingInfo';
 export * from './AccountStakingPayouts';
 export * from './AccountVestingInfo';
