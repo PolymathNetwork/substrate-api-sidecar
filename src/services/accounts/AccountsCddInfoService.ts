@@ -23,23 +23,16 @@ export class AccountsCddInfoService extends AbstractService {
 		if (did.isEmpty) {
 			return {
 			  did: "",
-			//   hasCddClaim: false,
+			  hasCddClaim: false,
 			};
 		}
+		const cddResponse = await api.rpc['identity'].isIdentityHasValidCdd(did);
 
-		// await api.rpc.identity.isIdentityHasValidCdd(did);
-		console.log(api.rpc);
-		console.log(JSON.stringify(api.rpc));
-		// const hasCddClaim = cddResponse.isOk;
-		// const status = hasCddClaim ? 'VALID' : 'INVALID';
-	  
-		// console.log('======================');
-		// console.log(`Identity "${did}" CDD status: ${status}`);
-		// console.log('======================');
+		const hasCddClaim = cddResponse.isOk;
 	  
 		return {
-		  did: "",
-		//   hasCddClaim,
+		  did: did.toString(),
+		  hasCddClaim,
 		};
 	}
 }
