@@ -7,6 +7,8 @@ import { getBlockWeight } from './metadata-consts';
  */
 export const polymeshControllers: ControllerConfig = {
 	controllers: [
+		'AccountsBalanceInfo',
+		'AccountsCddInfo',
 		'AccountsStakingPayouts',
 		'AccountsStakingInfo',
 		'AccountsValidate',
