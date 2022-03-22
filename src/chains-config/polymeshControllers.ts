@@ -24,6 +24,7 @@ export const polymeshControllers: ControllerConfig = {
 	controllers: [
 		'AccountsBalanceInfo',
 		'AccountsCddInfo',
+		'AccountsPendingAuthorizations',
 		'AccountsStakingPayouts',
 		'AccountsStakingInfo',
 		'AccountsValidate',
