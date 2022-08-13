@@ -1,3 +1,19 @@
+// Copyright 2017-2022 Parity Technologies (UK) Ltd.
+// This file is part of Substrate API Sidecar.
+//
+// Substrate API Sidecar is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 import accountVestingInfo1448 from './1448.json';
 import accountVestingInfo10254 from './10254.json';
 import accountVestingInfo111170 from './111170.json';
@@ -8,6 +24,9 @@ import accountVestingInfo6413249 from './6413249.json';
 import accountVestingInfo7232861 from './7232861.json';
 import accountVestingInfo8000000 from './8000000.json';
 import accountVestingInfo8320000 from './8320000.json';
+import accountVestingInfo8500000 from './8500000.json';
+import accountVestingInfo9000000 from './9000000.json';
+import accountVestingInfo9500000 from './9500000.json';
 
 export const polkadotAccountVestingInfoEndpoints = [
 	[
@@ -50,4 +69,16 @@ export const polkadotAccountVestingInfoEndpoints = [
 		'/accounts/15aKvwRqGVAwuBMaogtQXhuz9EQqUWsZJSAzomyb5xYwgBXA/vesting-info?at=8320000',
 		JSON.stringify(accountVestingInfo8320000),
 	], // v9130
+	[
+		'/accounts/15aKvwRqGVAwuBMaogtQXhuz9EQqUWsZJSAzomyb5xYwgBXA/vesting-info?at=8500000',
+		JSON.stringify(accountVestingInfo8500000),
+	], // v9140
+	[
+		'/accounts/15aKvwRqGVAwuBMaogtQXhuz9EQqUWsZJSAzomyb5xYwgBXA/vesting-info?at=9000000',
+		JSON.stringify(accountVestingInfo9000000),
+	], // v9151
+	[
+		'/accounts/15aKvwRqGVAwuBMaogtQXhuz9EQqUWsZJSAzomyb5xYwgBXA/vesting-info?at=9500000',
+		JSON.stringify(accountVestingInfo9500000),
+	], // v9170
 ];
