@@ -1,3 +1,17 @@
+// Copyright (C) 2022 Parity Technologies (UK) Ltd. (admin@parity.io)
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//         http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 use crate::debug;
 use core::str::FromStr;
 use log::info;
@@ -53,7 +67,7 @@ impl CalcPayout {
         // This is the fraction of the total reward that the validator and the
         // nominators will get.
         let validator_total_reward_part =
-            Perbill::from_rational_approximation(validator_reward_points, self.total_reward_points);
+            Perbill::from_rational(validator_reward_points, self.total_reward_points);
 
         // This is how much validator + nominators are entitled to.
         let validator_total_payout = validator_total_reward_part * self.era_payout;
@@ -66,7 +80,7 @@ impl CalcPayout {
         let own_exposure = Balance::from_str(nominator_exposure).unwrap();
         let total_exposure = Balance::from_str(total_exposure).unwrap();
         // This is the fraction of the validators leftover payout that the staker is entitled to
-        let own_exposure_part = Perbill::from_rational_approximation(own_exposure, total_exposure);
+        let own_exposure_part = Perbill::from_rational(own_exposure, total_exposure);
 
         // Now let's calculate how this is split to the account
         let own_staking_payout = if is_validator {

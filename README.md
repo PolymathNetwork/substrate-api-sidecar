@@ -36,9 +36,9 @@ Compatibility:
 |     v14.x.x   |   Stable    |
 |     v16.x.x   |   Stable    |
 |     v17.x.x   |  Not Stable |
-|     v18.x.x   |   Pending   | 
+|     v18.x.x   |   Pending   |
 
-NOTE: Node LTS (`long term support`) versions start with an even number, and odd number versions are subject to a 6 month testing period with active support before they are unsupported. It is recommended to use sidecar with a stable actively maintained version of node.js.  
+NOTE: Node LTS (`long term support`) versions start with an even number, and odd number versions are subject to a 6 month testing period with active support before they are unsupported. It is recommended to use sidecar with a stable actively maintained version of node.js.
 
 ## Table of contents
 
@@ -49,7 +49,8 @@ NOTE: Node LTS (`long term support`) versions start with an even number, and odd
 - [Available endpoints](https://paritytech.github.io/substrate-api-sidecar/dist/)
 - [Chain integration guide](./guides/CHAIN_INTEGRATION.md)
 - [Docker](#docker)
-- [Note for maintainers](#note-for-maintainers)
+- [Notes for maintainers](#notes-for-maintainers)
+- [Hardware requirements](#hardware-requirements)
 
 ## NPM package installation and usage
 
@@ -92,6 +93,18 @@ node_modules/.bin/substrate-api-sidecar
 [Jump to the configuration section](#configuration) for more details on connecting to a node.
 
 [Click here for full endpoint docs.](https://paritytech.github.io/substrate-api-sidecar/dist/)
+
+In the full endpoints doc, you will also find the following `trace` related endpoints :
+- `/experimental/blocks/{blockId}/traces/operations?actions=false`
+- `/experimental/blocks/head/traces/operations?actions=false`
+- `/experimental/blocks/{blockId}/traces`
+- `/experimental/blocks/head/traces`
+
+To have access to these endpoints you need to :
+1. Run your node with the flag `—unsafe-rpc-external`
+2. Check in sidecar if `BlocksTrace` controller is active for the chain you are running.
+
+Currently `BlocksTrace` controller is active in [Polkadot](https://github.com/paritytech/substrate-api-sidecar/blob/ff0cef5eaeeef74f9a931a0355d83fc5ebdea645/src/chains-config/polkadotControllers.ts#L17) and [Kusama](https://github.com/paritytech/substrate-api-sidecar/blob/ff0cef5eaeeef74f9a931a0355d83fc5ebdea645/src/chains-config/kusamaControllers.ts#L17).
 
 ## Source code installation and usage
 
@@ -154,16 +167,8 @@ For more information on our configuration manager visit its readme [here](https:
 #### Custom substrate types
 
 Some chains require custom type definitions in order for Sidecar to know how to decode the data
-retrieved from the node. Sidecar pulls types for chains from [@polkadot/apps-config](https://github.com/polkadot-js/apps/tree/master/packages/apps-config), but in some cases
-the types for the chain you are trying to connect to may be out of date or may simply not exist in
-@polkadot/apps-config.
-
-Sidecar affords environment variables which allow the user to specify an absolute path to a JSON file
-that contains type definitions in the corresponding formats. Consult polkadot-js/api for more info on
-the type formats (see `RegisteredTypes`).
-
-**N.B** Types set from environment variables will override the corresponding types pulled from
-@polkadot/apps-config.
+retrieved from the node. Sidecar affords environment variables which allow the user to specify an absolute path to a JSON file that contains type definitions in the corresponding formats. Consult polkadot-js/api for more info on
+the type formats (see `RegisteredTypes`). There is a helper CLI tool called [generate-type-bundle](https://github.com/paritytech/generate-type-bundle) that can generate a `typesBundle.json` file for you using chain information from [`@polkadot/apps-config`](https://github.com/polkadot-js/apps/tree/master/packages/apps-config). The generated json file from this tool will work directly with the `SAS_SUBSTRATE_TYPES_BUNDLE` ENV variable. 
 
 - `SAS_SUBSTRATE_TYPES_BUNDLE`: a bundle of types with versioning info, type aliases, derives, and
     rpc definitions. Format: `OverrideBundleType` (see [`typesBundle`](https://github.com/polkadot-js/api/blob/21039dec1fcad36061a96bf5526248c5fab38780/packages/types/src/types/registry.ts#L72)).
@@ -291,85 +296,57 @@ All the commits in this repo follow the [Conventional Commits spec](https://www.
 
 ### Updating polkadot-js dependencies
 
-1. Every Monday the polkadot-js ecosystem will usually come out with a new release. It's important that we keep up, 
-and read the release notes for any breaking changes or high priority updates.  You can use the following command `yarn upgrade-interactive` to find and update all available releases. To Upgrade just `@polkadot` scoped deps use `yarn up @polkadot/*`.
+1. Every Monday the polkadot-js ecosystem will usually come out with a new release. It's important that we keep up,
+and read the release notes for any breaking changes or high priority updates. In order to update all the dependencies and resolutions run `yarn update-pjs-deps`.
 
     - @polkadot/api [release notes](https://github.com/polkadot-js/api/releases)
-    - @polkadot/apps-config [release notes](https://github.com/polkadot-js/apps/releases)
-      - If there are any major changes to this package that includes third party type packages, its worth noting to contact the maintainers of sidecar and do a peer review of the changes in apps-config, and make sure no bugs will be inherited.
     - @polkadot/util-crypto [release notes](https://github.com/polkadot-js/common/releases)
     - @substrate/calc [npm release page](https://www.npmjs.com/package/@substrate/calc)
 
-1. Next make sure the resolutions are up to date inside of the `package.json` for all `@polkadot/*` packages, please refer to the releases of each polkadot package we update as a dependency, and reach out to the maintainers for any questions. You will have to run `yarn` again to ensure the dependency `cache`, and `yarn.lock` have the correct versions. 
+1. Ensure everything is up to date and working by running the following:
+   ```
+   yarn
+   yarn dedupe
+   yarn build
+   yarn lint
+   yarn test
+   yarn test:init-e2e-tests
+   ```
 
-1. Ensure everything is working by running the following tests, `yarn build`, `yarn lint`, `yarn test`, `yarn test:init-e2e-tests`.
+1. Commit the dependency updates with a name like `fix(deps): update pjs api` (title depending on what got updated, see commit history for other examples of this), and wait to get it merged.
 
-1. Lastly, create a PR with the updates. 
+1. Follow [RELEASE.md](./RELEASE.md) next if you're working through a full sidecar release. This will involve creating a separate PR where the changelog and versions are bumped.
 
-### Releases
+## Hardware requirements
 
-#### Preparation
+### Disk Space
+Sidecar is a stateless program and thus should not use any disk space.
 
-1. Make sure the polkadot-js dependencies are up to date. Refer to the "Updating polkadot-js dependencies" if they need to be updated.
+### Memory
+The requirements follow the default of node.js processes which is an upper bound in HEAP memory of a little less than 2GB thus 4GB of memory should be sufficient.
 
-1. Make sure that you've run `yarn` in this folder, and run `cargo install wasm-pack` so that that binary is available on your `$PATH`.
+### Running sidecar and a node
+Please note that if you run sidecar next to a substrate node in a single machine then your system specifications should improve significantly.
+- Our official specifications related to validator nodes can be found in the polkadot wiki [page](https://wiki.polkadot.network/docs/maintain-guides-how-to-validate-polkadot#standard-hardware).
+- Regarding archive nodes :
+  - again as mentioned in the polkadot wiki [page](https://wiki.polkadot.network/docs/maintain-sync#types-of-nodes), the space needed from an archive node depends on which block we are currently on (of the specific chain we are referring to).
+  - there are no other hardware requirements for an archive node since it is not time critical (archive nodes do not participate in the consensus).
 
-1. Checkout a branch with the format `name-v5-0-1`. When deciding what version will be released it is important to look over 1) PRs since the last release and 2) release notes for any updated polkadot-js dependencies as they may affect type definitions.
+### Benchmarks
+During the benchmarks we performed, we concluded that sidecar would use a max of 1.1GB of RSS memory.
 
-1. The next step is making sure the release will work against all relevant runtimes for Polkadot, Kusama, and Westend. This can be handled by running `yarn test:init-e2e-tests`. If you would like to test on an individual chain, you may run the same command followed by its chain, ex: `yarn test:init-e2e-tests:polkadot`. Before moving forward ensure all tests pass, and if it warns of any missing types feel free to make an issue [here](https://github.com/paritytech/substrate-api-sidecar/issues).
+The benchmarks were:
+- using 4 threads over 12 open http connections and
+- were overloading the cache with every runtime possible on polkadot.
 
-    Note: that the e2e tests will connect to running nodes in order to test sidecar against real data, and they may fail owing to those connections taking too long to establish. If you run into any failures, try running tests just for the chain that failed with something like `yarn test:init-e2e-tests:polkadot`.
+Hardware specs in which the benchmarks were performed:
+```
+Machine type:
+n2-standard-4 (4 vCPUs, 16 GB memory)
 
-1. Update the version in the package.json (this is very important for releasing on NPM).
+CPU Platform:
+Intel Cascade Lake
 
-1. Update the substrate-api-sidecar version in the docs by going into `docs/src/openapi-v1.yaml`, and changing the `version` field under `info` to the releases respected version. Then run `yarn build:docs`.
-
-1. Update `CHANGELOG.md` by looking at merged PRs since the last release. Follow the format of previous releases. Only record dep updates if they reflect type definition updates as those affect the users API. It will also help to sort previous PR's by "recently updated" in order to see all PR's merged since the last release. 
-
-    Make sure to note if it is a high upgrade priority (e.g. it has type definitions for an upcoming runtime upgrade to a Parity maintained network).
-
-1. Commit with ex: `chore(release): 5.0.1`, then `git push` your release branch up, make a PR, get review approval, then merge.
-
-    **NOTE**: Before pushing up as a sanity check run the following 4 commands and ensure they all run with zero errors. There is one exception with `yarn test` where you will see errors logged, that is expected as long as all the test suites pass.
-
-    ```bash
-    yarn dedupe
-    yarn build
-    yarn lint
-    yarn test
-    ```
-
-1. If one of the commits for this release includes the `calc` directory and package, make sure to follow the instructions below for releasing it on npm (if a new version hasn't yet been released seperately).
-
-#### Publish on GitHub
-
-1. Double check that `master` is properly merged, pull down `master` branch.
-
-1. [Create a new release](https://github.com/paritytech/substrate-api-sidecar/releases/new) on github, select `Choose a tag` and create a new tag name matching the version like `v5.0.1`. The tag will be automatically published along with the release notes.
-
-1. Generally you can copy the changelog information and set the release notes to that. You can also observe past releases as a reference.
-
-#### Publish on NPM
-
-NOTE: You must be a member of the `@substrate` NPM org and must belong to the `Developers` team within the org. (Please make sure you have 2FA enabled.)
-
-1. Now that master has the commit for the release, pull down `master` branch.
-
-2. Run the following commands. (Please ensure you have 2FA enabled)
-
-    ```bash
-    npm login # Only necessary if not already logged in
-    yarn deploy # Builds JS target and then runs npm publish
-    ```
-
-#### Calc Package Release Prep
-
-1. Head into the `calc` directory in sidecar, and increment the version inside of the `Cargo.toml`, as well as the `pkg/package.json`.
-
-2. Confirm that the package compiles correctly, `cargo build --release`.
-
-3. Continue with the normal sidecar release process.
-
-#### Publish Calc Package
-
-1. `cd` into `calc/pkg` and `npm login`, then `npm publish`.
+Hard-Disk:
+500GB
+```

@@ -1,8 +1,24 @@
+// Copyright 2017-2022 Parity Technologies (UK) Ltd.
+// This file is part of Substrate API Sidecar.
+//
+// Substrate API Sidecar is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 import { ApiPromise } from '@polkadot/api';
-import AbstractController from 'src/controllers/AbstractController';
-import { AbstractService } from 'src/services/AbstractService';
 
 import { controllers } from '../controllers';
+import AbstractController from '../controllers/AbstractController';
+import { AbstractService } from '../services/AbstractService';
 import { ControllerConfig } from '../types/chains-config';
 import { acalaControllers } from './acalaControllers';
 import { astarControllers } from './astarControllers';
@@ -13,12 +29,14 @@ import { defaultControllers } from './defaultControllers';
 import { dockMainnetControllers } from './dockMainnetControllers';
 import { dockPoSMainnetControllers } from './dockPoSMainnetControllers';
 import { dockTestnetControllers } from './dockPoSTestnetControllers';
+import { heikoControllers } from './heikoControllers';
 import { karuraControllers } from './karuraControllers';
 import { kiltControllers } from './kiltControllers';
 import { kulupuControllers } from './kulupuControllers';
 import { kusamaControllers } from './kusamaControllers';
 import { mandalaControllers } from './mandalaControllers';
 import { mantaControllers } from './mantaControllers';
+import { parallelControllers } from './parallelControllers';
 import { polkadotControllers } from './polkadotControllers';
 import { polymeshControllers } from './polymeshControllers';
 import { polymeshControllersMainnet } from './polymeshControllersMainnet';
@@ -28,7 +46,7 @@ import { statemineControllers } from './statemineControllers';
 import { statemintControllers } from './statemintControllers';
 import { westendControllers } from './westendControllers';
 
-const specToControllerMap = {
+const specToControllerMap: { [x: string]: ControllerConfig } = {
 	westend: westendControllers,
 	polkadot: polkadotControllers,
 	polymesh_testnet: polymeshControllers,
@@ -53,6 +71,8 @@ const specToControllerMap = {
 	manta: mantaControllers,
 	crust: crustControllers,
 	bifrost: bifrostControllers,
+	heiko: heikoControllers,
+	parallel: parallelControllers,
 };
 
 /**

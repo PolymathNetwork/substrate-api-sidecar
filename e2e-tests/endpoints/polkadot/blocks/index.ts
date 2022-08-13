@@ -1,3 +1,19 @@
+// Copyright 2017-2022 Parity Technologies (UK) Ltd.
+// This file is part of Substrate API Sidecar.
+//
+// Substrate API Sidecar is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 import block943438 from './943438.json';
 import block1603025 from './1603025.json';
 import block1662525 from './1662525.json';
@@ -15,7 +31,9 @@ import block7217908 from './7217908.json';
 import block7300000 from './7300000.json';
 import block8000000 from './8000000.json';
 import block8320000 from './8320000.json';
+import block8500000 from './8500000.json';
 import block8891183 from './8891183.json';
+import block9500000 from './9500000.json';
 
 export const polkadotBlockEndpoints = [
 	['/blocks/943438', JSON.stringify(block943438)], //v17
@@ -35,5 +53,7 @@ export const polkadotBlockEndpoints = [
 	['/blocks/7300000', JSON.stringify(block7300000)], //v9110
 	['/blocks/8000000', JSON.stringify(block8000000)], //v9122
 	['/blocks/8320000', JSON.stringify(block8320000)], //v9130
+	['/blocks/8500000', JSON.stringify(block8500000)], //v9140
 	['/blocks/8891183', JSON.stringify(block8891183)], //v9151
+	['/blocks/9500000', JSON.stringify(block9500000)], //v9170
 ];
