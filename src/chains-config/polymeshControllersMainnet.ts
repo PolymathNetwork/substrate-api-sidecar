@@ -31,7 +31,6 @@ export const polymeshControllersMainnet: ControllerConfig = {
 	options: {
 		finalizes: true,
 		minCalcFeeRuntime: 0,
-		blockWeightStore: getBlockWeight('polymesh_mainnet'),
 		blockStore: initLRUCache(),
 	},
 };
