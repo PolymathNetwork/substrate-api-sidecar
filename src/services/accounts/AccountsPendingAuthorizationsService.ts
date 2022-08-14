@@ -1,8 +1,13 @@
 import { IAccountPendingAuthorizations } from 'src/types/responses';
-
+import { Polymesh } from '@polymeshassociation/polymesh-sdk';
+import {
+	AuthorizationType,
+	AuthorizationRequest,
+  } from '@polymeshassociation/polymesh-sdk/types';
 import { AbstractService } from '../AbstractService';
 
 export class AccountsPendingAuthorizationsService extends AbstractService {
+	private polymeshSdk: Polymesh | undefined;
 	/**
 	 * Fetch pending authorizations for an account.
 	 *
@@ -11,15 +16,15 @@ export class AccountsPendingAuthorizationsService extends AbstractService {
 	async fetchAccountPendingAuthorizations(
 		address: string
 	): Promise<IAccountPendingAuthorizations> {
-		const { api } = this;
+		if (this.polymeshSdk === undefined) {
+			this.polymeshSdk = await Polymesh.connect({nodeUrl: process.env.SAS_SUBSTRATE_WS_URL!});
+		}
 
-		const pendingAuths = await api.rpc['identity'].getFilteredAuthorizations(
-			{ Account: address },
-			true,
-			'JoinIdentity',
-		);
-		  
-		const ids = pendingAuths.map(({ auth_id }: any) => auth_id.toNumber());
+		const account = await this.polymeshSdk.accountManagement.getAccount({address: address});
+	
+		const auths = await account.authorizations.getReceived({type: AuthorizationType.JoinIdentity, includeExpired: false})
+	  
+		const ids = auths.map((req: AuthorizationRequest) => req.authId.toNumber());
 		  
 		return {
 		  auths: ids,
