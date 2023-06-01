@@ -53,7 +53,7 @@
     "@polkadot/api": "^10.7.2",
     "@polkadot/api-contract": "^10.7.2",
     "@polkadot/util-crypto": "^12.2.1",
-    "@polymeshassociation/polymesh-sdk": "^15.3.0",
+    "@polymeshassociation/polymesh-sdk": "^20.1.0",
     "@substrate/calc": "^0.3.1",
     "argparse": "^2.0.1",
     "confmgr": "^1.0.10",
