@@ -17,7 +17,7 @@ export class AccountsPendingAuthorizationsService extends AbstractService {
 		address: string
 	): Promise<IAccountPendingAuthorizations> {
 		if (this.polymeshSdk === undefined) {
-			this.polymeshSdk = await Polymesh.connect({nodeUrl: process.env.SAS_SUBSTRATE_WS_URL!});
+			this.polymeshSdk = await Polymesh.connect({nodeUrl: process.env.SAS_SUBSTRATE_URL!});
 		}
 
 		const account = await this.polymeshSdk.accountManagement.getAccount({address: address});

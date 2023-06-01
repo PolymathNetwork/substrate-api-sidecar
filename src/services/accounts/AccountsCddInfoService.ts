@@ -14,9 +14,9 @@ export class AccountsCddInfoService extends AbstractService {
 	async fetchAccountCddInfo(
 		address: string
 	): Promise<IAccountCddInfo> {		
-
+		console.log("GETTING CDD");
 		if (this.polymeshSdk === undefined) {
-			this.polymeshSdk = await Polymesh.connect({nodeUrl: process.env.SAS_SUBSTRATE_WS_URL!});
+			this.polymeshSdk = await Polymesh.connect({nodeUrl: process.env.SAS_SUBSTRATE_URL!});
 		}
 
 		const account = await this.polymeshSdk.accountManagement.getAccount({address: address});
