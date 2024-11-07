@@ -2108,9 +2108,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@polymeshassociation/polymesh-sdk@npm:26.0.0-beta.1":
-  version: 26.0.0-beta.1
-  resolution: "@polymeshassociation/polymesh-sdk@npm:26.0.0-beta.1"
+"@polymeshassociation/polymesh-sdk@npm:26.1.0":
+  version: 26.1.0
+  resolution: "@polymeshassociation/polymesh-sdk@npm:26.1.0"
   dependencies:
     "@apollo/client": ^3.8.1
     "@polkadot/api": 11.2.1
@@ -2128,7 +2128,7 @@ __metadata:
     patch-package: ^8.0.0
     semver: ^7.5.4
     websocket: ^1.0.34
-  checksum: ff8ef1506b545e8a84683da08e94882a0aaf3dfc39afbc91c5de93359fc41b96b9df9ab711f3693045bdb1516a141a6899fb1955dfa12b19288d8eab6f7012d5
+  checksum: 07b5afdbc4bf687d473d384e10668c1ea5757a7a0559eaaf18ffe983165d1f2b401ce9c63646e502437c5ed03cda5456bcce0ee9c3b09a576ca9968e0868bee6
   languageName: node
   linkType: hard
 
@@ -2178,7 +2178,7 @@ __metadata:
     "@polkadot/api": ^10.7.2
     "@polkadot/api-contract": ^10.7.2
     "@polkadot/util-crypto": ^12.2.1
-    "@polymeshassociation/polymesh-sdk": 26.0.0-beta.1
+    "@polymeshassociation/polymesh-sdk": 26.1.0
     "@substrate/calc": ^0.3.1
     "@substrate/dev": ^0.6.7
     "@types/argparse": 2.0.10
