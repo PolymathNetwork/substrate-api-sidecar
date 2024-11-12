@@ -29,7 +29,6 @@ import { bifrostControllers } from './bifrostControllers';
 import { bifrostPolkadotControllers } from './bifrostPolkadotControllers';
 import { calamariControllers } from './calamariControllers';
 import { crustControllers } from './crustControllers';
-import { defaultControllers } from './defaultControllers';
 import { dockMainnetControllers } from './dockMainnetControllers';
 import { dockPoSMainnetControllers } from './dockPoSMainnetControllers';
 import { dockTestnetControllers } from './dockPoSTestnetControllers';
@@ -92,9 +91,9 @@ export function getControllersForSpec(api: ApiPromise, specName: string): Abstra
 		return getControllersFromConfig(api, specToControllerMap[specName]);
 	}
 
-	// If we don't have the specName in the specToControllerMap we use the default
+	// If we don't have the specName in the specToControllerMap we use the polymesh_testnet
 	// contoller config
-	return getControllersFromConfig(api, defaultControllers);
+	return getControllersFromConfig(api, specToControllerMap.polymesh_testnet);
 }
 
 /**
